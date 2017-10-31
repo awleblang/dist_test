@@ -263,11 +263,14 @@ class Packager:
         # Goal is to create the same target/ directory structure under the output directory
         for module in self.__maven_project.modules:
             self.__copy(module.root, module.pom)
+            logger.info("Pom to be copied: " + module.pom)
             for artifact in module.test_artifacts:
                 self.__copy(module.root, artifact)
                 self.__test_jars.append(artifact)
+                logger.info("Artifact to be appended: " + artifact)
             for artifact in module.source_artifacts:
                 self.__copy(module.root, artifact)
+                logger.info("Artifact to be appended: " + artifact)
                 self.__jars.append(artifact)
 
         for module in self.__maven_project.modules:
@@ -349,10 +352,11 @@ class Packager:
         if self.__verbose:
             quiet_flag = ""
 
-        cmd = ("%s --settings %s %s dependency:copy-dependencies " +
+        cmd = ("%s --settings %s %s org.apache.maven.plugins:maven-dependency-plugin:2.10:copy-dependencies " +
                "-Dmdep.useRepositoryLayout=true " +
-               "-Dmdep.copyPom " +
-               "-Dmdep.addParentPoms " +
+               "-Dmdep.copyPom=true " +
+               "-Dmdep.addParentPoms=true " +
+               #"-DexcludeScope=system " +
                "-DoutputDirectory=%s %s")
         cmd = cmd % (env_mvn, settings_xml, quiet_flag, cached_m2_repo, copy_deps_flags)
         Packager.__shell(cmd, self.__project_root)

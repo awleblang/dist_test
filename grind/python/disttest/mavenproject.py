@@ -200,6 +200,11 @@ class MavenProject:
                              [0] + [len(m.test_classes) for m in self.included_modules])
         logging.info("Found %s included modules out of %s total modules with %s test classes within project %s",\
                      len(self.included_modules), len(self.modules), num_classes, self.project_root)
+        logging.info("included_modules: ")
+        for mod in self.included_modules:
+            logging.info(mod.name)
+            for source in mod.source_artifacts:
+                logging.info("source: " + mod.name)
 
     @staticmethod
     def __get_classfiles(files):
